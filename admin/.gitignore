@@ -1,0 +1,6 @@
+node_modules
+# Ignore environment files
+.env
+
+# Sensitive files
+config/*.json
