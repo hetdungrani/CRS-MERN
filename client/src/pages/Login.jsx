@@ -14,127 +14,74 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/login",
-        credentials
-      );
+      const response = await axios.post("http://localhost:5000/api/login", credentials);
 
       if (response.data.success && response.data.token) {
-        alert("Login Successful!"); // --- CRITICAL FIX: STORE THE JWT TOKEN ---
-        localStorage.setItem("token", response.data.token); // Optionally store user ID
+        localStorage.setItem("token", response.data.token);
         localStorage.setItem("studentId", response.data.studentId);
-        navigate("/"); // Navigate to home after login success
+        navigate("/");
       } else {
-        // Fallback for unexpected successful response without token
         alert("Login failed due to incomplete server response.");
       }
     } catch (err) {
-      // Use the message sent by the server for better debugging
-      alert(
-        err.response?.data?.message ||
-          "Invalid Credentials. Please check your details."
-      );
+      alert(err.response?.data?.message || "Invalid Credentials. Please check your details.");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-indigo-900 to-gray-900 p-4">
-           {" "}
-      <div className="bg-white/5 backdrop-blur-lg p-10 rounded-3xl shadow-2xl shadow-indigo-900/50 w-full max-w-md border border-white/10 transition-all duration-500">
-               {" "}
-        <div className="flex flex-col items-center mb-8">
-                   {" "}
-          <div className="bg-indigo-700/70 p-4 rounded-full mb-3 shadow-xl">
-                        <LogIn className="text-white" size={32} />         {" "}
+    <div className="min-h-screen flex items-center justify-center p-4 text-white">
+      <div className="elevated-card p-10 rounded-3xl w-full max-w-md">
+        <div className="flex flex-col items-center mb-8 text-center space-y-2">
+          <div className="soft-gradient p-4 rounded-2xl shadow-lg">
+            <LogIn className="text-white" size={28} />
           </div>
-                   {" "}
-          <h2 className="text-4xl font-extrabold text-white mb-1">
-            Welcome Back
-          </h2>
-                   {" "}
-          <p className="text-gray-300 mt-2 text-center">
-            Enter your college credentials to access the CRS portal
-          </p>
-                 {" "}
+          <h2 className="text-3xl font-bold">Welcome back</h2>
+          <p className="text-slate-300">Enter your credentials to access the CRS portal.</p>
         </div>
-               {" "}
-        <form onSubmit={handleLogin} className="space-y-6">
-                    {/* Email Input */}         {" "}
+
+        <form onSubmit={handleLogin} className="space-y-5">
           <div className="relative">
-                       {" "}
-            <Mail
-              className="absolute left-3 top-3.5 text-indigo-400"
-              size={20}
-            />
-                       {" "}
+            <Mail className="absolute left-3 top-3 text-indigo-200" size={18} />
             <input
               type="email"
               name="email"
               value={credentials.email}
               placeholder="College Email"
-              className="w-full pl-10 p-3.5 border-none bg-white/10 text-white rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none transition placeholder-gray-400 shadow-inner"
+              className="w-full pl-10 p-3.5 bg-white/5 border border-white/10 text-white rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none placeholder-slate-400"
               onChange={handleChange}
               required
             />
-                     {" "}
           </div>
-                    {/* Password Input */}         {" "}
           <div className="relative">
-                       {" "}
-            <Lock
-              className="absolute left-3 top-3.5 text-indigo-400"
-              size={20}
-            />
-                       {" "}
+            <Lock className="absolute left-3 top-3 text-indigo-200" size={18} />
             <input
               type="password"
               name="password"
               value={credentials.password}
               placeholder="Password"
-              className="w-full pl-10 p-3.5 border-none bg-white/10 text-white rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none transition placeholder-gray-400 shadow-inner"
+              className="w-full pl-10 p-3.5 bg-white/5 border border-white/10 text-white rounded-xl focus:ring-2 focus:ring-indigo-400 outline-none placeholder-slate-400"
               onChange={handleChange}
               required
             />
-                     {" "}
           </div>
-                   {" "}
-          <div className="text-right pt-1">
-                       {" "}
-            <a
-              href="#"
-              className="text-sm text-indigo-300 hover:text-white hover:underline transition"
-            >
-              Forgot Password?
-            </a>
-                     {" "}
-          </div>
-                   {" "}
+
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-4 rounded-xl font-extrabold text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-500/50 transition-all duration-300 active:scale-[0.98]"
+            className="w-full btn-primary justify-center py-3 shadow-indigo-500/30"
           >
-                        Access Portal          {" "}
+            Access Portal
           </button>
-                 {" "}
         </form>
-               {" "}
-        <div className="mt-10 text-center text-gray-400">
-                   {" "}
+
+        <div className="mt-8 text-center text-slate-300 text-sm">
           <p>
-            Don't have an account?            {" "}
-            <Link
-              to="/register"
-              className="text-indigo-400 font-semibold hover:text-white hover:underline ml-1 transition"
-            >
-              Register Now
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="text-cyan-300 font-semibold hover:text-white">
+              Register now
             </Link>
-                     {" "}
           </p>
-                 {" "}
         </div>
-             {" "}
       </div>
-         {" "}
     </div>
   );
 };

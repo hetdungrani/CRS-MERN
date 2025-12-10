@@ -1,55 +1,34 @@
-import React from 'react';
-import { Mail, ShieldCheck, Globe } from 'lucide-react';
+import React from "react";
+import { Mail, ShieldCheck, Globe } from "lucide-react";
 
 const AdminFooter = () => {
   return (
-    <footer className="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          
-          {/* Admin Rights Section */}
-          <div>
-            <div className="flex items-center space-x-2 text-white mb-4">
-              <ShieldCheck className="text-blue-500" size={20} />
-              <span className="font-bold">Administrative Access</span>
-            </div>
-            <p className="text-sm leading-relaxed">
-              Confidential TPO access only. Unauthorized use or data modification 
-              within this recruitment portal is strictly prohibited.
-            </p>
+    <footer className="border-t border-white/10 bg-slate-950 mt-10">
+      <div className="admin-shell py-10 grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
+        <div className="space-y-3">
+          <div className="admin-pill w-fit">
+            <ShieldCheck size={16} /> Admin Access
           </div>
-
-          {/* Quick Links for TPO */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">Management Links</h4>
-            <ul className="text-sm space-y-2">
-              <li><a href="/admin/students" className="hover:text-blue-400 transition">View Student List</a></li>
-              <li><a href="/admin/post-job" className="hover:text-blue-400 transition">Broadcast Vacancy</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition">Audit Logs</a></li>
-            </ul>
-          </div>
-
-          {/* Institutional Contact */}
-          <div>
-            <h4 className="text-white font-semibold mb-4">System Support</h4>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center space-x-2">
-                <Mail size={16} className="text-blue-500" />
-                <span>it-support@college.edu</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Globe size={16} className="text-blue-500" />
-                <span>www.college-portal.edu</span>
-              </div>
-            </div>
-          </div>
+          <p className="leading-relaxed">
+            Confidential TPO console. Manage drives, student pools, and posted roles in one responsive workspace.
+          </p>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-slate-800 pt-6 flex flex-col md:flex-row justify-between items-center text-xs uppercase tracking-widest">
-          <p>&copy; {new Date().getFullYear()} Campus Recruitment System | TPO Module</p>
-          <p className="mt-2 md:mt-0">Built with MERN Stack (MongoDB, Express, React, Node.js)</p>
+        <div>
+          <h4 className="text-white font-semibold mb-3">Management</h4>
+          <ul className="space-y-2 text-sm">
+            <li><a href="/admin/students" className="hover:text-white transition">View Student List</a></li>
+            <li><a href="/admin/post-job" className="hover:text-white transition">Broadcast Vacancy</a></li>
+            <li><a href="/admin/job-list" className="hover:text-white transition">View Job Posts</a></li>
+          </ul>
         </div>
+        <div className="space-y-2 text-sm">
+          <h4 className="text-white font-semibold mb-3">System Support</h4>
+          <p className="flex items-center gap-2"><Mail size={16} className="text-cyan-300" /> it-support@college.edu</p>
+          <p className="flex items-center gap-2"><Globe size={16} className="text-cyan-300" /> www.college-portal.edu</p>
+        </div>
+      </div>
+      <div className="border-t border-white/10 py-4 text-center text-xs uppercase tracking-[0.25em] text-slate-400">
+        © {new Date().getFullYear()} CRS TPO Console
       </div>
     </footer>
   );

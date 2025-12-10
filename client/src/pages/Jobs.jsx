@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
+import { Briefcase, Gauge, Target, Building2 } from "lucide-react";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -11,13 +11,12 @@ const Jobs = () => {
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      // API Call to your server route /api/jobs
       const response = await axios.get("http://localhost:5000/api/jobs");
-      const studentId = localStorage.getItem('studentId');
-      // mark whether current student has applied for each job
-      const jobsWithApplied = response.data.map(j => ({
+      const studentId = localStorage.getItem("studentId");
+      const jobsWithApplied = response.data.map((j) => ({
         ...j,
-        applied: !!(studentId && j.applicants && j.applicants.some(a => a._id === studentId))
+        applied:
+          !!(studentId && j.applicants && j.applicants.some((a) => a._id === studentId)),
       }));
       setJobs(jobsWithApplied);
       setError(null);
@@ -33,63 +32,50 @@ const Jobs = () => {
     fetchJobs();
   }, []);
 
-  // Real-time updates via Socket.IO
   useEffect(() => {
-    const socket = io('http://localhost:5000');
+    const socket = io("http://localhost:5000");
 
-    socket.on('jobUpdated', (updatedJob) => {
-      const studentId = localStorage.getItem('studentId');
-      setJobs(prev => prev.map(j => j._id === updatedJob._id ? ({
-        ...updatedJob,
-        applied: !!(studentId && updatedJob.applicants && updatedJob.applicants.some(a => a._id === studentId))
-      }) : j));
+    socket.on("jobUpdated", (updatedJob) => {
+      const studentId = localStorage.getItem("studentId");
+      setJobs((prev) =>
+        prev.map((j) =>
+          j._id === updatedJob._id
+            ? {
+                ...updatedJob,
+                applied:
+                  !!(
+                    studentId &&
+                    updatedJob.applicants &&
+                    updatedJob.applicants.some((a) => a._id === studentId)
+                  ),
+              }
+            : j
+        )
+      );
     });
 
-    socket.on('jobPosted', (newJob) => {
-      const studentId = localStorage.getItem('studentId');
+    socket.on("jobPosted", (newJob) => {
+      const studentId = localStorage.getItem("studentId");
       const jobWithApplied = {
         ...newJob,
-        applied: !!(studentId && newJob.applicants && newJob.applicants.some(a => a._id === studentId))
+        applied:
+          !!(studentId && newJob.applicants && newJob.applicants.some((a) => a._id === studentId)),
       };
-      setJobs(prev => [jobWithApplied, ...prev]);
+      setJobs((prev) => [jobWithApplied, ...prev]);
     });
 
     return () => socket.disconnect();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="p-8 max-w-7xl mx-auto text-center text-lg text-gray-600">
-        Loading Available Opportunities...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 max-w-7xl mx-auto text-center text-lg text-red-500 font-medium">
-        Error: {error}
-      </div>
-    );
-  }
-
-  if (jobs.length === 0) {
-    return (
-      <div className="p-8 max-w-7xl mx-auto text-center text-lg text-gray-500 font-medium">
-        No job postings are currently available.
-      </div>
-    );
-  }
   const handleApply = async (jobId) => {
     try {
-      const studentId = localStorage.getItem('studentId');
+      const studentId = localStorage.getItem("studentId");
       if (!studentId) {
-        alert('Please log in before applying to a job.');
+        alert("Please log in before applying to a job.");
         return;
       }
 
-      const token = localStorage.getItem('token');
-
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `http://localhost:5000/api/jobs/apply/${jobId}`,
         { studentId },
@@ -98,46 +84,82 @@ const Jobs = () => {
         }
       );
 
-      alert(response.data.message || 'Applied successfully');
+      alert(response.data.message || "Applied successfully");
 
-      // Update UI: mark job as applied locally immediately
-      setJobs(prev => prev.map(j => {
-        if (j._id !== jobId) return j;
-        const already = j.applicants && j.applicants.some(a => a._id === studentId);
-        return {
-          ...j,
-          applied: true,
-          applicants: already ? j.applicants : ([...(j.applicants || []), { _id: studentId }])
-        };
-      }));
+      setJobs((prev) =>
+        prev.map((j) => {
+          if (j._id !== jobId) return j;
+          const already = j.applicants && j.applicants.some((a) => a._id === studentId);
+          return {
+            ...j,
+            applied: true,
+            applicants: already ? j.applicants : [...(j.applicants || []), { _id: studentId }],
+          };
+        })
+      );
     } catch (err) {
-      alert(`Application Failed: ${err.response?.data?.error || 'Server error'}`);
+      alert(`Application Failed: ${err.response?.data?.error || "Server error"}`);
     }
   };
+
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-blue-800">
-        Available Opportunities ({jobs.length})
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="section-shell py-12">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
+        <div>
+          <p className="pill mb-2">Opportunities</p>
+          <h1 className="heading-lg">Open Roles ({jobs.length})</h1>
+          <p className="text-muted">
+            Discover the latest openings curated for your campus profile.
+          </p>
+        </div>
+      </div>
+
+      {loading && (
+        <div className="text-center text-slate-300 py-10">Loading available opportunities...</div>
+      )}
+
+      {error && (
+        <div className="text-center text-red-400 font-semibold py-10">Error: {error}</div>
+      )}
+
+      {!loading && !error && jobs.length === 0 && (
+        <div className="text-center text-slate-300 py-10">No job postings are currently available.</div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {jobs.map((job) => (
-          <div
-            key={job._id}
-            className="bg-white border rounded-xl p-6 shadow-sm hover:shadow-lg transition"
-          >
-            <h3 className="text-xl font-bold text-gray-800">{job.title}</h3>
-            <p className="text-blue-600 font-medium mb-4">{job.company}</p>
-            <div className="flex justify-between text-sm text-gray-500">
-              <span>Package: {job.salary} LPA</span>
-              <span>Min: {job.criteria} CGPA</span>
+          <div key={job._id} className="elevated-card rounded-2xl p-6 flex flex-col gap-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-slate-300 text-sm">{job.company}</p>
+                <h3 className="text-xl font-bold text-white">{job.title}</h3>
+              </div>
+              <span className="pill bg-white/15">
+                <Briefcase size={14} /> {job.salary} LPA
+              </span>
             </div>
-            {/* ⬅️ UPDATED TEXT: Changed to "Apply Job" */}
+            <div className="flex items-center justify-between text-sm text-slate-300">
+              <span className="flex items-center gap-2">
+                <Gauge size={16} /> Min CGPA: <strong className="text-white">{job.criteria}</strong>
+              </span>
+              <span className="flex items-center gap-2">
+                <Target size={16} /> Applicants:{" "}
+                <strong className="text-white">{job.applicants?.length || 0}</strong>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-cyan-200">
+              <Building2 size={16} /> Office: Hybrid / Onsite
+            </div>
             <button
               onClick={() => handleApply(job._id)}
               disabled={job.applied}
-              className={`mt-4 w-full py-2 rounded-lg block text-center transition font-semibold ${job.applied ? 'bg-gray-200 text-gray-600 cursor-default' : 'border border-blue-600 text-blue-600 hover:bg-blue-50'}`}
+              className={`mt-auto w-full py-3 rounded-xl font-semibold transition ${
+                job.applied
+                  ? "bg-white/10 text-slate-300 cursor-not-allowed"
+                  : "bg-gradient-to-r from-indigo-500 to-cyan-400 text-white hover:shadow-lg hover:-translate-y-0.5"
+              }`}
             >
-              {job.applied ? 'Applied ✓' : 'Apply Job'}
+              {job.applied ? "Applied ✓" : "Apply Now"}
             </button>
           </div>
         ))}

@@ -1,10 +1,25 @@
 const Contact = () => (
-  <div className="max-w-2xl mx-auto p-8">
-    <h1 className="text-3xl font-bold mb-6 text-center">Contact Placement Cell</h1>
-    <div className="bg-gray-50 p-8 rounded-lg space-y-4 shadow-md">
-      <p><strong>Email:</strong> placement@college.edu</p>
-      <p><strong>TPO Office:</strong> Block A, Room 402</p>
-      <p><strong>Inquiry hours:</strong> 10:00 AM - 4:00 PM</p>
+  <div className="section-shell py-14 text-white">
+    <div className="max-w-2xl mx-auto elevated-card p-8 rounded-3xl space-y-6">
+      <div className="text-center space-y-2">
+        <p className="pill mx-auto">Get Support</p>
+        <h1 className="heading-lg text-white text-3xl">Contact Placement Cell</h1>
+        <p className="text-slate-300">We respond on working days within 24 hours.</p>
+      </div>
+      <div className="space-y-4 text-slate-200">
+        <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
+          <p className="text-sm text-slate-300">Email</p>
+          <p className="text-lg font-semibold">placement@college.edu</p>
+        </div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
+          <p className="text-sm text-slate-300">TPO Office</p>
+          <p className="text-lg font-semibold">Block A, Room 402</p>
+        </div>
+        <div className="bg-white/5 border border-white/10 p-4 rounded-2xl">
+          <p className="text-sm text-slate-300">Inquiry hours</p>
+          <p className="text-lg font-semibold">10:00 AM - 4:00 PM</p>
+        </div>
+      </div>
     </div>
   </div>
 );

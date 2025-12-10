@@ -1,56 +1,50 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Facebook, Linkedin, Twitter } from 'lucide-react';
+import React from "react";
+import { Mail, Phone, MapPin, Linkedin, Twitter, Github } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white pt-12 pb-8">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12">
-        
-        {/* About Section */}
-        <div>
-          <h3 className="text-xl font-bold mb-4 border-b border-blue-500 pb-2 w-max">About CRS</h3>
-          <p className="text-gray-400 leading-relaxed">
-            The Campus Recruitment System provides a digital platform for high-performance recruitment management, streamlining the process for students and TPOs alike[cite: 31, 38].
+    <footer className="border-t border-white/10 bg-slate-950">
+      <div className="section-shell py-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="space-y-3">
+          <div className="pill">CRS Portal</div>
+          <p className="text-muted leading-relaxed">
+            A unified recruitment hub that keeps students, placement teams, and recruiters aligned on every opportunity.
           </p>
         </div>
 
-        {/* Quick Links */}
         <div>
-          <h3 className="text-xl font-bold mb-4 border-b border-blue-500 pb-2 w-max">Quick Links</h3>
-          <ul className="space-y-2 text-gray-400">
-            <li><a href="/jobs" className="hover:text-white transition">Current Openings</a></li>
-            <li><a href="/registration" className="hover:text-white transition">Student Registration</a></li>
-            <li><a href="/contact" className="hover:text-white transition">Contact Placement Cell</a></li>
-            <li><a href="/about" className="hover:text-white transition">Privacy Policy</a></li>
+          <h4 className="text-white font-semibold mb-4">Navigation</h4>
+          <ul className="space-y-2 text-muted">
+            <li><a href="/jobs" className="hover:text-white transition">Open Roles</a></li>
+            <li><a href="/statistics" className="hover:text-white transition">Placement Stats</a></li>
+            <li><a href="/about" className="hover:text-white transition">About</a></li>
+            <li><a href="/contact" className="hover:text-white transition">Contact</a></li>
           </ul>
         </div>
 
-        {/* Contact Info */}
         <div>
-          <h3 className="text-xl font-bold mb-4 border-b border-blue-500 pb-2 w-max">Contact Us</h3>
-          <ul className="space-y-3">
-            <li className="flex items-center text-gray-400">
-              <MapPin size={18} className="mr-3 text-blue-500" /> 123 University Drive, City
-            </li>
-            <li className="flex items-center text-gray-400">
-              <Phone size={18} className="mr-3 text-blue-500" /> +1 234 567 890
-            </li>
-            <li className="flex items-center text-gray-400">
-              <Mail size={18} className="mr-3 text-blue-500" /> placement@college.edu
-            </li>
+          <h4 className="text-white font-semibold mb-4">Support</h4>
+          <ul className="space-y-2 text-muted">
+            <li><a href="mailto:placement@college.edu" className="hover:text-white transition">Email Support</a></li>
+            <li><a href="/about" className="hover:text-white transition">FAQs</a></li>
+            <li><a href="/contact" className="hover:text-white transition">Help Desk</a></li>
           </ul>
-          
-          {/* Social Icons */}
-          <div className="flex space-x-4 mt-6">
-            <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-blue-600 transition"><Linkedin size={20}/></a>
-            <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-blue-400 transition"><Twitter size={20}/></a>
-            <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-blue-800 transition"><Facebook size={20}/></a>
+        </div>
+
+        <div className="space-y-3 text-muted">
+          <h4 className="text-white font-semibold mb-4">Get in touch</h4>
+          <p className="flex items-center gap-3"><MapPin size={18} className="text-cyan-300" /> 123 University Drive</p>
+          <p className="flex items-center gap-3"><Phone size={18} className="text-cyan-300" /> +1 (234) 567-890</p>
+          <p className="flex items-center gap-3"><Mail size={18} className="text-cyan-300" /> placement@college.edu</p>
+          <div className="flex gap-3 pt-2">
+            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition"><Linkedin size={18} /></a>
+            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition"><Twitter size={18} /></a>
+            <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition"><Github size={18} /></a>
           </div>
         </div>
       </div>
-
-      <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} Campus Recruitment System. Built with MERN Stack[cite: 2, 32].</p>
+      <div className="border-t border-white/10 py-5 text-center text-xs uppercase tracking-[0.3em] text-slate-400">
+        © {new Date().getFullYear()} CRS Platform — Built on MERN
       </div>
     </footer>
   );

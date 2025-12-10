@@ -1,89 +1,113 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // ⬅️ CRITICAL: Added useNavigate
-import { Menu, X, GraduationCap, LogOut } from 'lucide-react'; // Added LogOut icon
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, X, GraduationCap, LogOut } from "lucide-react";
+
+const links = [
+  { to: "/", label: "Home" },
+  { to: "/jobs", label: "Jobs" },
+  { to: "/statistics", label: "Statistics" },
+  { to: "/about", label: "About" },
+  { to: "/contact", label: "Contact" },
+];
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize navigation hook
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("token");
 
-  // 1. Check for token in localStorage to determine login status
-  const isLoggedIn = !!localStorage.getItem('token'); 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("studentId");
+    setIsOpen(false);
+    navigate("/login");
+  };
 
-  // 2. Logout handler function
-  const handleLogout = () => {
-    localStorage.removeItem('token'); // Clear the JWT token
-    localStorage.removeItem('studentId'); // Clear stored user ID
-    setIsOpen(false); // Close mobile menu
-    navigate('/login'); // Redirect to login page
-  };
+  return (
+    <header className="sticky top-0 z-50">
+      <nav className="backdrop-blur-xl glass-panel border-b border-white/10">
+        <div className="section-shell">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="p-2 rounded-xl soft-gradient shadow-lg">
+                <GraduationCap className="text-white" size={22} />
+              </div>
+              <div className="leading-tight">
+                <p className="text-xs text-slate-300 uppercase tracking-[0.2em]">
+                  Campus Recruitment
+                </p>
+                <p className="text-white font-semibold text-lg">CRS Portal</p>
+              </div>
+            </Link>
 
-  return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <GraduationCap className="text-blue-600" size={32} />
-            <span className="font-bold text-xl text-gray-800">CRS Portal</span>
-          </Link>
+            <div className="hidden md:flex items-center gap-3">
+              {links.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="text-slate-200 px-3 py-2 rounded-lg hover:text-white hover:bg-white/10 transition text-sm font-medium"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-md"
+                >
+                  <LogOut size={18} />
+                  Logout
+                </button>
+              ) : (
+                <Link to="/login" className="btn-primary text-sm">
+                  Login
+                </Link>
+              )}
+            </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            <Link to="/" className="text-gray-600 hover:text-blue-600 font-medium transition">Home</Link>
-            <Link to="/jobs" className="text-gray-600 hover:text-blue-600 font-medium transition">Jobs</Link>
-            <Link to="/statistics" className="text-gray-600 hover:text-blue-600 font-medium transition">Statistics</Link>
-            <Link to="/about" className="text-gray-600 hover:text-blue-600 font-medium transition">About College</Link>
+            <button
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition"
+            >
+              {isOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
+          </div>
+        </div>
 
-            {/* 3. Conditional Button: Logout or Login */}
-            {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition shadow-md flex items-center space-x-2"
-              >
-                <LogOut size={20} />
-                <span>Logout</span>
-              </button>
-            ) : (
-              <Link to="/login" className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition shadow-md">
-                Login
-              </Link>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600">
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 animate-fade-in-down">
-          <Link to="/" onClick={() => setIsOpen(false)} className="block text-gray-600 font-medium">Home</Link>
-          <Link to="/jobs" onClick={() => setIsOpen(false)} className="block text-gray-600 font-medium">Jobs</Link>
-          <Link to="/statistics" onClick={() => setIsOpen(false)} className="block text-gray-600 font-medium">Statistics</Link>
-          <Link to="/about" onClick={() => setIsOpen(false)} className="block text-gray-600 font-medium">About College</Link>
-          
-          {/* 4. Conditional Button for Mobile Menu */}
-          {isLoggedIn ? (
-            <button
-              onClick={handleLogout}
-              className="block w-full bg-red-600 text-center text-white py-2 rounded-md"
-            >
-              Logout
-            </button>
-          ) : (
-            <Link to="/login" onClick={() => setIsOpen(false)} className="block bg-blue-600 text-center text-white py-2 rounded-md">
-              Login
-            </Link>
-          )}
-        </div>
-      )}
-    </nav>
-  );
+        {isOpen && (
+          <div className="md:hidden border-t border-white/10 bg-slate-900/90 backdrop-blur-xl">
+            <div className="section-shell py-4 space-y-2">
+              {links.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-3 rounded-xl text-white bg-white/5 hover:bg-white/10 transition font-medium"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-3 py-3 rounded-xl text-white bg-red-500 hover:bg-red-600 transition font-semibold"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block text-center px-3 py-3 rounded-xl text-white bg-gradient-to-r from-indigo-500 to-cyan-400 hover:shadow-lg transition font-semibold"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
 };
 
 export default Navbar;

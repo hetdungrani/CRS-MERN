@@ -16,7 +16,7 @@ function PrivateRoute({ children }) {
 function AdminApp() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-col min-h-screen text-white bg-transparent">
         <AdminNavbar />
         <main className="grow">
           <Routes>
