@@ -80,6 +80,35 @@ exports.deleteStudent = async (req, res) => {
     }
 };
 
+// --- R: Student self profile ---
+exports.getStudentProfile = async (req, res) => {
+    try {
+        const student = await Student.findById(req.params.id).select('-password');
+        if (!student) return res.status(404).json({ error: "Student not found" });
+        res.json(student);
+    } catch (err) {
+        res.status(500).json({ error: "Server error fetching profile" });
+    }
+};
+
+// --- U: Student self update ---
+exports.updateStudentProfile = async (req, res) => {
+    try {
+        const updates = { ...req.body };
+        // prevent password updates here
+        delete updates.password;
+        const student = await Student.findByIdAndUpdate(
+            req.params.id,
+            updates,
+            { new: true, runValidators: true, select: '-password' }
+        );
+        if (!student) return res.status(404).json({ error: "Student not found" });
+        res.json({ message: "Profile updated", student });
+    } catch (err) {
+        res.status(500).json({ error: "Server error updating profile" });
+    }
+};
+
 // --- Admin Registration ---
 exports.registerAdmin = async (req, res) => {
   try {

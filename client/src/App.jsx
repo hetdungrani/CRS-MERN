@@ -7,7 +7,7 @@ import Registration from './pages/Registration';
 import Login from './pages/Login';
 import Jobs from './pages/Jobs';
 import Statistics from './pages/Statistics';
-import About from './pages/About';
+import Profile from './pages/Profile';
 import Contact from './pages/Contact';
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/statistics" element={<Statistics />} />
-            <Route path="/about" element={<About />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>

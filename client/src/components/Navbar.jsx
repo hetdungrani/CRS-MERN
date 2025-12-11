@@ -6,7 +6,7 @@ const links = [
   { to: "/", label: "Home" },
   { to: "/jobs", label: "Jobs" },
   { to: "/statistics", label: "Statistics" },
-  { to: "/about", label: "About" },
+  { to: "/profile", label: "Profile" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -52,7 +52,7 @@ const Navbar = () => {
               {isLoggedIn ? (
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow-md"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-500 to-cyan-400 shadow-lg shadow-indigo-500/30 hover:-translate-y-0.5 transition"
                 >
                   <LogOut size={18} />
                   Logout

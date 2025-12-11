@@ -101,3 +101,29 @@ exports.applyJob = async (req, res) => {
         return res.status(500).json({ error: 'Server error while applying' });
     }
 };
+
+// DELETE /api/jobs/apply/:id - withdraw application
+exports.withdrawJob = async (req, res) => {
+    try {
+        const jobId = req.params.id;
+        const { studentId } = req.body;
+
+        if (!studentId) {
+            return res.status(400).json({ error: 'studentId required' });
+        }
+
+        const job = await Job.findById(jobId);
+        if (!job) return res.status(404).json({ error: 'Job not found' });
+
+        job.applicants = (job.applicants || []).filter(a => a.toString() !== studentId);
+        await job.save();
+
+        const populatedJob = await Job.findById(jobId).populate('applicants', 'fullName email cgpa');
+        try { socket.getIO().emit('jobUpdated', populatedJob); } catch (e) { /* ignore */ }
+
+        return res.json({ message: 'Application withdrawn successfully' });
+    } catch (err) {
+        console.error('Error withdrawing application:', err);
+        return res.status(500).json({ error: 'Server error while withdrawing' });
+    }
+};

@@ -7,6 +7,8 @@ const { protectAdmin } = require('../middleware/authMiddleware');
 // --- Student/Auth Routes ---
 router.post('/register', authController.registerStudent); // CREATE (Registration) [cite: 15]
 router.post('/login', authController.loginStudent); // READ (Login/Auth)
+router.get('/students/:id', authController.getStudentProfile); // student self profile
+router.put('/students/:id', authController.updateStudentProfile); // student self update
 
 // --- Admin (TPO) Routes ---
 router.get('/students', protectAdmin, authController.getAllStudents); // READ (Student Pool View) [cite: 19]
@@ -18,6 +20,7 @@ router.post('/admin/login', authController.loginAdmin); // Admin login
 router.post('/jobs', protectAdmin, jobController.postJob); // CREATE (Job Posting)
 router.get('/jobs', jobController.getJobs); // READ (View Jobs)
 router.post('/jobs/apply/:id', jobController.applyJob); // Student applies to job
+router.delete('/jobs/apply/:id', jobController.withdrawJob); // Student withdraws application
 router.put('/jobs/:id', protectAdmin, jobController.updateJob); // UPDATE job
 router.delete('/jobs/:id', protectAdmin, jobController.deleteJob); // DELETE job
 module.exports = router;

@@ -17,7 +17,7 @@ const Footer = () => {
           <ul className="space-y-2 text-muted">
             <li><a href="/jobs" className="hover:text-white transition">Open Roles</a></li>
             <li><a href="/statistics" className="hover:text-white transition">Placement Stats</a></li>
-            <li><a href="/about" className="hover:text-white transition">About</a></li>
+            <li><a href="/profile" className="hover:text-white transition">Profile</a></li>
             <li><a href="/contact" className="hover:text-white transition">Contact</a></li>
           </ul>
         </div>
@@ -26,7 +26,7 @@ const Footer = () => {
           <h4 className="text-white font-semibold mb-4">Support</h4>
           <ul className="space-y-2 text-muted">
             <li><a href="mailto:placement@college.edu" className="hover:text-white transition">Email Support</a></li>
-            <li><a href="/about" className="hover:text-white transition">FAQs</a></li>
+            <li><a href="/profile" className="hover:text-white transition">Profile FAQs</a></li>
             <li><a href="/contact" className="hover:text-white transition">Help Desk</a></li>
           </ul>
         </div>
