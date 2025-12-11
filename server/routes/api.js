@@ -18,4 +18,6 @@ router.post('/admin/login', authController.loginAdmin); // Admin login
 router.post('/jobs', protectAdmin, jobController.postJob); // CREATE (Job Posting)
 router.get('/jobs', jobController.getJobs); // READ (View Jobs)
 router.post('/jobs/apply/:id', jobController.applyJob); // Student applies to job
+router.put('/jobs/:id', protectAdmin, jobController.updateJob); // UPDATE job
+router.delete('/jobs/:id', protectAdmin, jobController.deleteJob); // DELETE job
 module.exports = router;

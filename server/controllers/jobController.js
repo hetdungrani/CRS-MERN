@@ -29,6 +29,38 @@ exports.getJobs = async (req, res) => {
     }
 };
 
+// --- U: Update Operation (Edit Job) ---
+exports.updateJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+        const updated = await Job.findByIdAndUpdate(id, updates, { new: true, runValidators: true })
+            .populate('applicants', 'fullName email cgpa');
+
+        if (!updated) return res.status(404).json({ error: 'Job not found' });
+
+        try { socket.getIO().emit('jobUpdated', updated); } catch (e) { /* ignore if socket not ready */ }
+        return res.json({ message: 'Job updated successfully', job: updated });
+    } catch (err) {
+        console.error('Error updating job:', err);
+        return res.status(500).json({ error: 'Server error updating job' });
+    }
+};
+
+// --- D: Delete Operation (Remove Job) ---
+exports.deleteJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Job.findByIdAndDelete(id);
+        if (!deleted) return res.status(404).json({ error: 'Job not found' });
+        try { socket.getIO().emit('jobDeleted', { _id: id }); } catch (e) { /* ignore if socket not ready */ }
+        return res.json({ message: 'Job deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting job:', err);
+        return res.status(500).json({ error: 'Server error deleting job' });
+    }
+};
+
 // POST /api/jobs/apply/:id
 exports.applyJob = async (req, res) => {
     try {

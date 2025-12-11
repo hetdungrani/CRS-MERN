@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import {
   Briefcase,
@@ -9,13 +9,23 @@ import {
   Users,
   ChevronDown,
   ChevronUp,
+  PenSquare,
+  Trash2,
+  X,
 } from "lucide-react";
 import { io } from "socket.io-client";
+
+const API_BASE = "http://localhost:5000/api";
 
 const JobPostList = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedJobId, setExpandedJobId] = useState(null);
+  const [editingJob, setEditingJob] = useState(null);
+  const [form, setForm] = useState({ title: "", company: "", salary: "", criteria: "" });
+  const token = useMemo(() => localStorage.getItem("adminToken"), []);
+
+  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
 
   useEffect(() => {
     fetchJobs();
@@ -32,13 +42,17 @@ const JobPostList = () => {
       setJobs((prev) => [newJob, ...prev]);
     });
 
+    socket.on("jobDeleted", ({ _id }) => {
+      setJobs((prev) => prev.filter((j) => j._id !== _id));
+    });
+
     return () => socket.disconnect();
   }, []);
 
   const fetchJobs = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/jobs");
+      const res = await axios.get(`${API_BASE}/jobs`);
       setJobs(res.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -56,6 +70,43 @@ const JobPostList = () => {
 
   const toggleApplicants = (jobId) => {
     setExpandedJobId(expandedJobId === jobId ? null : jobId);
+  };
+
+  const openEdit = (job) => {
+    setEditingJob(job);
+    setForm({
+      title: job.title,
+      company: job.company,
+      salary: job.salary,
+      criteria: job.criteria,
+    });
+  };
+
+  const closeEdit = () => {
+    setEditingJob(null);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!editingJob) return;
+    try {
+      const res = await axios.put(`${API_BASE}/jobs/${editingJob._id}`, form, { headers: authHeader });
+      const updated = res.data.job;
+      setJobs((prev) => prev.map((j) => (j._id === updated._id ? updated : j)));
+      closeEdit();
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to update job");
+    }
+  };
+
+  const handleDelete = async (jobId) => {
+    if (!window.confirm("Delete this job?")) return;
+    try {
+      await axios.delete(`${API_BASE}/jobs/${jobId}`, { headers: authHeader });
+      setJobs((prev) => prev.filter((j) => j._id !== jobId));
+    } catch (err) {
+      alert(err.response?.data?.error || "Failed to delete job");
+    }
   };
 
   if (loading) {
@@ -94,6 +145,7 @@ const JobPostList = () => {
                   <th className="px-6 py-3 font-semibold text-center">Min. CGPA</th>
                   <th className="px-6 py-3 font-semibold text-center">Applicants</th>
                   <th className="px-6 py-3 font-semibold">Posted Date</th>
+                  <th className="px-6 py-3 font-semibold text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -138,10 +190,26 @@ const JobPostList = () => {
                           <Clock size={14} /> {formatDate(job.postedDate)}
                         </div>
                       </td>
+                      <td className="px-6 py-4 text-center">
+                        <div className="flex items-center justify-center gap-3">
+                          <button
+                            onClick={() => openEdit(job)}
+                            className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-cyan-200 flex items-center gap-2 text-sm"
+                          >
+                            <PenSquare size={16} /> Update
+                          </button>
+                          <button
+                            onClick={() => handleDelete(job._id)}
+                            className="px-3 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-200 flex items-center gap-2 text-sm"
+                          >
+                            <Trash2 size={16} /> Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                     {expandedJobId === job._id && job.applicants && job.applicants.length > 0 && (
                       <tr>
-                        <td colSpan="6" className={`p-0 ${index % 2 === 0 ? "bg-white/5" : "bg-transparent"}`}>
+                        <td colSpan="7" className={`p-0 ${index % 2 === 0 ? "bg-white/5" : "bg-transparent"}`}>
                           <div className="p-4 mx-6 my-4 rounded-xl bg-white/5 border border-white/10">
                             <h4 className="text-lg font-semibold text-white mb-3">
                               Applicants ({job.applicants.length})
@@ -169,6 +237,76 @@ const JobPostList = () => {
           </div>
         )}
       </div>
+
+      {editingJob && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="admin-card rounded-2xl p-6 w-full max-w-lg relative">
+            <button
+              onClick={closeEdit}
+              className="absolute top-3 right-3 text-slate-300 hover:text-white"
+            >
+              <X size={18} />
+            </button>
+            <h3 className="text-xl font-semibold text-white mb-4">Update Job</h3>
+            <form className="space-y-4" onSubmit={handleUpdate}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-slate-300 mb-1">Job Title</p>
+                  <input
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-300 mb-1">Company</p>
+                  <input
+                    value={form.company}
+                    onChange={(e) => setForm({ ...form, company: e.target.value })}
+                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 outline-none"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-slate-300 mb-1">Salary (LPA)</p>
+                  <input
+                    value={form.salary}
+                    onChange={(e) => setForm({ ...form, salary: e.target.value })}
+                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 outline-none"
+                    required
+                  />
+                </div>
+                <div>
+                  <p className="text-sm text-slate-300 mb-1">Min CGPA</p>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={form.criteria}
+                    onChange={(e) => setForm({ ...form, criteria: e.target.value })}
+                    className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 outline-none"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={closeEdit}
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200"
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="admin-btn px-5 py-2">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
