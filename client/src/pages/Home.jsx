@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, ShieldCheck, Clock, ArrowRight, BarChart, Users } from "lucide-react";
 
@@ -8,7 +8,27 @@ const highlights = [
   { icon: <BarChart size={18} />, title: "Placement insights", desc: "Track stats with live dashboards." },
 ];
 
-const Home = () => (
+const Home = () => {
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/jobs");
+        const data = await response.json();
+        // Get top 4 most recent jobs
+        setJobs(data.slice(0, 4));
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  return (
   <div className="text-white">
     <section className="section-shell pt-16 pb-20 flex flex-col lg:flex-row items-center gap-12">
       <div className="flex-1 space-y-6">
@@ -46,29 +66,31 @@ const Home = () => (
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="text-sm text-slate-300">Active Job Matches</p>
-              <h3 className="text-4xl font-bold text-white">32</h3>
+              <h3 className="text-4xl font-bold text-white">{jobs.length}</h3>
             </div>
             <div className="pill bg-white/15">Live</div>
           </div>
-          <div className="space-y-4">
-            {[
-              { role: "Frontend Engineer", company: "Nova Labs", salary: "12 LPA", match: "92%" },
-              { role: "Data Analyst", company: "InsightIQ", salary: "10 LPA", match: "88%" },
-              { role: "Product Intern", company: "Craftify", salary: "6 LPA", match: "85%" },
-            ].map((job) => (
-              <div key={job.role} className="rounded-2xl bg-white/5 border border-white/10 p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold text-white">{job.role}</p>
-                    <p className="text-sm text-slate-300">{job.company}</p>
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {loading ? (
+              <div className="text-center text-slate-400 py-8">Loading jobs...</div>
+            ) : jobs.length === 0 ? (
+              <div className="text-center text-slate-400 py-8">No jobs available</div>
+            ) : (
+              jobs.map((job) => (
+                <div key={job._id} className="rounded-2xl bg-white/5 border border-white/10 p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-white">{job.title}</p>
+                      <p className="text-sm text-slate-300">{job.company}</p>
+                    </div>
+                    <span className="text-cyan-300 font-semibold">{job.salary} LPA</span>
                   </div>
-                  <span className="text-cyan-300 font-semibold">{job.salary}</span>
+                  <div className="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400" style={{ width: `${Math.min(job.cgpa * 10, 100)}%` }} />
+                  </div>
                 </div>
-                <div className="mt-3 h-2 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400" style={{ width: job.match }} />
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -91,5 +113,6 @@ const Home = () => (
     </section>
   </div>
 );
+};
 
 export default Home;

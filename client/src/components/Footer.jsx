@@ -25,7 +25,7 @@ const Footer = () => {
         <div>
           <h4 className="text-white font-semibold mb-4">Support</h4>
           <ul className="space-y-2 text-muted">
-            <li><a href="mailto:placement@college.edu" className="hover:text-white transition">Email Support</a></li>
+            <li><a href="mailto:crssite@placement.edu" className="hover:text-white transition">Email Support</a></li>
             <li><a href="/profile" className="hover:text-white transition">Profile FAQs</a></li>
             <li><a href="/contact" className="hover:text-white transition">Help Desk</a></li>
           </ul>
@@ -33,9 +33,9 @@ const Footer = () => {
 
         <div className="space-y-3 text-muted">
           <h4 className="text-white font-semibold mb-4">Get in touch</h4>
-          <p className="flex items-center gap-3"><MapPin size={18} className="text-cyan-300" /> 123 University Drive</p>
-          <p className="flex items-center gap-3"><Phone size={18} className="text-cyan-300" /> +1 (234) 567-890</p>
-          <p className="flex items-center gap-3"><Mail size={18} className="text-cyan-300" /> placement@college.edu</p>
+          <p className="flex items-center gap-3"><MapPin size={18} className="text-cyan-300" /> CRS Campus</p>
+          <p className="flex items-center gap-3"><Phone size={18} className="text-cyan-300" /> +91 73593 93901</p>
+          <p className="flex items-center gap-3"><Mail size={18} className="text-cyan-300" /> crssite@placement.edu</p>
           <div className="flex gap-3 pt-2">
             <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition"><Linkedin size={18} /></a>
             <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition"><Twitter size={18} /></a>
@@ -44,7 +44,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-t border-white/10 py-5 text-center text-xs uppercase tracking-[0.3em] text-slate-400">
-        © {new Date().getFullYear()} CRS Platform — Built on MERN
+        © {new Date().getFullYear()} CRS Placement Portal. All rights reserved. | Developed by CRS Team
       </div>
     </footer>
   );

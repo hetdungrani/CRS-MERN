@@ -2,10 +2,10 @@ import React from "react";
 import { TrendingUp, Target, Users, Briefcase } from "lucide-react";
 
 const metrics = [
-  { label: "Students Placed", value: "95%", tone: "from-emerald-500 to-cyan-400", icon: <TrendingUp size={22} /> },
-  { label: "Hiring Partners", value: "120+", tone: "from-indigo-500 to-blue-500", icon: <Briefcase size={22} /> },
-  { label: "Highest Package", value: "45 LPA", tone: "from-orange-500 to-amber-400", icon: <Target size={22} /> },
-  { label: "Yearly Drives", value: "60", tone: "from-pink-500 to-red-400", icon: <Users size={22} /> },
+  { label: "Students Placed", value: "92%", tone: "from-emerald-500 to-cyan-400", icon: <TrendingUp size={22} /> },
+  { label: "Hiring Partners", value: "85+", tone: "from-indigo-500 to-blue-500", icon: <Briefcase size={22} /> },
+  { label: "Highest Package", value: "32 LPA", tone: "from-orange-500 to-amber-400", icon: <Target size={22} /> },
+  { label: "Yearly Drives", value: "48", tone: "from-pink-500 to-red-400", icon: <Users size={22} /> },
 ];
 
 const Statistics = () => {
@@ -35,9 +35,9 @@ const Statistics = () => {
 
       <div className="mt-12 rounded-3xl elevated-card p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { title: "Campus to Offer time", value: "18 days", desc: "Average turnaround across roles" },
-          { title: "Offer acceptance", value: "89%", desc: "Students accepting first choice offers" },
-          { title: "Repeat recruiters", value: "76%", desc: "Industry partners returning every season" },
+          { title: "Campus to Offer time", value: "21 days", desc: "Average turnaround across roles" },
+          { title: "Offer acceptance", value: "87%", desc: "Students accepting first choice offers" },
+          { title: "Repeat recruiters", value: "72%", desc: "Industry partners returning every season" },
         ].map((item) => (
           <div key={item.title} className="bg-white/5 rounded-2xl p-5 border border-white/10">
             <p className="text-sm text-slate-300">{item.title}</p>

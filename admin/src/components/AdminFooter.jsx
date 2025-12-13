@@ -10,7 +10,7 @@ const AdminFooter = () => {
             <ShieldCheck size={16} /> Admin Access
           </div>
           <p className="leading-relaxed">
-            Confidential TPO console. Manage drives, student pools, and posted roles in one responsive workspace.
+            Confidential CRS console. Manage drives, student pools, and posted roles in one responsive workspace.
           </p>
         </div>
         <div>
@@ -23,12 +23,12 @@ const AdminFooter = () => {
         </div>
         <div className="space-y-2 text-sm">
           <h4 className="text-white font-semibold mb-3">System Support</h4>
-          <p className="flex items-center gap-2"><Mail size={16} className="text-cyan-300" /> it-support@college.edu</p>
-          <p className="flex items-center gap-2"><Globe size={16} className="text-cyan-300" /> www.college-portal.edu</p>
+          <p className="flex items-center gap-2"><Mail size={16} className="text-cyan-300" /> crssite@placement.edu</p>
+          <p className="flex items-center gap-2"><Globe size={16} className="text-cyan-300" /> www.crs-placement.edu</p>
         </div>
       </div>
       <div className="border-t border-white/10 py-4 text-center text-xs uppercase tracking-[0.25em] text-slate-400">
-        © {new Date().getFullYear()} CRS TPO Console
+        © {new Date().getFullYear()} CRS Admin Console
       </div>
     </footer>
   );

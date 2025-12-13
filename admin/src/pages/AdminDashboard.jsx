@@ -11,36 +11,71 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const token = localStorage.getItem("adminToken");
-        const studentRes = await axios.get("http://localhost:5000/api/students", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [studentRes, jobRes] = await Promise.all([
+          axios.get("http://localhost:5000/api/students", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          axios.get("http://localhost:5000/api/jobs")
+        ]);
         setStats({
           studentCount: studentRes.data.length,
-          jobCount: 5,
+          jobCount: jobRes.data.length,
         });
       } catch (err) {
         console.error("Error fetching stats:", err);
-        setToast({ message: "Failed to fetch dashboard stats. Please check your connection or login status.", type: "error" });
+        setToast({
+          message:
+            "Failed to fetch dashboard stats. Please check your connection or login status.",
+          type: "error",
+        });
       }
     };
     fetchStats();
   }, []);
 
   const cards = [
-    { title: "Total Students", value: stats.studentCount, icon: <Users size={22} />, tone: "from-indigo-500 to-cyan-400" },
-    { title: "Active Jobs", value: stats.jobCount, icon: <Briefcase size={22} />, tone: "from-violet-500 to-blue-500" },
-    { title: "Placed Students", value: "42", icon: <Award size={22} />, tone: "from-emerald-500 to-teal-400" },
-    { title: "Placement Rate", value: "88%", icon: <TrendingUp size={22} />, tone: "from-amber-500 to-orange-400" },
+    {
+      title: "Total Students",
+      value: stats.studentCount,
+      icon: <Users size={22} />,
+      tone: "from-indigo-500 to-cyan-400",
+    },
+    {
+      title: "Active Jobs",
+      value: stats.jobCount,
+      icon: <Briefcase size={22} />,
+      tone: "from-violet-500 to-blue-500",
+    },
+    {
+      title: "Placed Students",
+      value: "38",
+      icon: <Award size={22} />,
+      tone: "from-emerald-500 to-teal-400",
+    },
+    {
+      title: "Placement Rate",
+      value: "84%",
+      icon: <TrendingUp size={22} />,
+      tone: "from-amber-500 to-orange-400",
+    },
   ];
 
   return (
     <div className="admin-shell py-10">
-      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <p className="admin-pill mb-2">Control Panel</p>
-          <h1 className="text-3xl font-bold text-white">TPO Dashboard</h1>
-          <p className="text-slate-300">Monitor activity, drive readiness, and posted roles.</p>
+          <h1 className="text-3xl font-bold text-white">CRS Dashboard</h1>
+          <p className="text-slate-300">
+            Monitor activity, drive readiness, and posted roles.
+          </p>
         </div>
       </div>
 
@@ -48,8 +83,14 @@ const AdminDashboard = () => {
         {cards.map((card) => (
           <div key={card.title} className="admin-card rounded-2xl p-6">
             <div className="flex items-center justify-between mb-3">
-              <div className={`p-3 rounded-xl bg-gradient-to-r ${card.tone} text-white`}>{card.icon}</div>
-              <span className="text-xs uppercase tracking-wide text-slate-300">{card.title}</span>
+              <div
+                className={`p-3 rounded-xl bg-gradient-to-r ${card.tone} text-white`}
+              >
+                {card.icon}
+              </div>
+              <span className="text-xs uppercase tracking-wide text-slate-300">
+                {card.title}
+              </span>
             </div>
             <p className="text-3xl font-bold text-white">{card.value}</p>
           </div>
@@ -57,9 +98,13 @@ const AdminDashboard = () => {
       </div>
 
       <div className="admin-card rounded-3xl p-8 text-slate-200">
-        <h2 className="text-xl font-semibold text-white mb-3">Quick Management</h2>
+        <h2 className="text-xl font-semibold text-white mb-3">
+          Quick Management
+        </h2>
         <p className="text-slate-300">
-          Welcome back, Placement Officer. Use the navigation bar to manage student records or broadcast new job opportunities to your campus community.
+          Welcome back, Placement Officer. Use the navigation bar to manage
+          student records or broadcast new job opportunities to your campus
+          community.
         </p>
       </div>
     </div>
