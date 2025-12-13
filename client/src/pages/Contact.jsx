@@ -1,3 +1,5 @@
+import React from "react";
+
 const Contact = () => (
   <div className="section-shell py-14 text-white">
     <div className="max-w-2xl mx-auto elevated-card p-8 rounded-3xl space-y-6">

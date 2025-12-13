@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Search, Trash2, UserCheck } from "lucide-react";
+import Toast from "../components/Toast";
 
 const RegisteredStudents = () => {
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState("");
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchStudents();
@@ -21,7 +23,7 @@ const RegisteredStudents = () => {
       setStudents(res.data);
     } catch (err) {
       console.error("Error fetching students:", err);
-      alert("Failed to fetch students. Please check your connection or login status.");
+      setToast({ message: "Failed to fetch students. Please check your connection or login status.", type: "error" });
     }
   };
 
@@ -34,9 +36,10 @@ const RegisteredStudents = () => {
         },
       });
       setStudents(students.filter((student) => student._id !== id));
+      setToast({ message: "Student record deleted successfully!", type: "success" });
     } catch (err) {
       console.error("Error deleting student:", err);
-      alert("Delete failed");
+      setToast({ message: "Failed to delete student record.", type: "error" });
     }
   };
 
@@ -48,6 +51,7 @@ const RegisteredStudents = () => {
 
   return (
     <div className="admin-shell py-10">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
           <p className="admin-pill mb-2">Applicants</p>

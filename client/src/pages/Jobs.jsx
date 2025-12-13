@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { Briefcase, Gauge, Target, Building2 } from "lucide-react";
+import Toast from "../components/Toast";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [toast, setToast] = useState(null);
 
   const fetchJobs = async () => {
     try {
@@ -71,7 +73,7 @@ const Jobs = () => {
     try {
       const studentId = localStorage.getItem("studentId");
       if (!studentId) {
-        alert("Please log in before applying to a job.");
+        setToast({ message: "Please log in before applying to a job.", type: "warning" });
         return;
       }
 
@@ -84,7 +86,7 @@ const Jobs = () => {
         }
       );
 
-      alert(response.data.message || "Applied successfully");
+      setToast({ message: response.data.message || "Application submitted successfully!", type: "success" });
 
       setJobs((prev) =>
         prev.map((j) => {
@@ -98,12 +100,13 @@ const Jobs = () => {
         })
       );
     } catch (err) {
-      alert(`Application Failed: ${err.response?.data?.error || "Server error"}`);
+      setToast({ message: err.response?.data?.error || "Application failed. Please try again.", type: "error" });
     }
   };
 
   return (
     <div className="section-shell py-12">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-8">
         <div>
           <p className="pill mb-2">Opportunities</p>

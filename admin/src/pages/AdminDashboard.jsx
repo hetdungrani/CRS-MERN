@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Users, Briefcase, TrendingUp, Award } from "lucide-react";
+import Toast from "../components/Toast";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ studentCount: 0, jobCount: 0 });
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -18,7 +20,7 @@ const AdminDashboard = () => {
         });
       } catch (err) {
         console.error("Error fetching stats:", err);
-        alert("Failed to fetch dashboard stats. Please check your connection or login status.");
+        setToast({ message: "Failed to fetch dashboard stats. Please check your connection or login status.", type: "error" });
       }
     };
     fetchStats();
@@ -33,6 +35,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-shell py-10">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <p className="admin-pill mb-2">Control Panel</p>

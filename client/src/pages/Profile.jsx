@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { User, Mail, GraduationCap, Save, RefreshCw, Briefcase } from "lucide-react";
+import Toast from "../components/Toast";
+import ConfirmModal from "../components/ConfirmModal";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -11,6 +13,8 @@ const Profile = () => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, jobId: null });
 
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -32,7 +36,7 @@ const Profile = () => {
       );
       setJobs(appliedJobs);
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to load profile");
+      setToast({ message: err.response?.data?.error || "Failed to load profile", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -48,9 +52,9 @@ const Profile = () => {
     setSaving(true);
     try {
       await axios.put(`${API_BASE}/students/${studentId}`, profile, { headers });
-      alert("Profile updated");
+      setToast({ message: "Profile updated successfully!", type: "success" });
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to update profile");
+      setToast({ message: err.response?.data?.error || "Failed to update profile", type: "error" });
     } finally {
       setSaving(false);
     }
@@ -58,15 +62,20 @@ const Profile = () => {
 
   const handleWithdraw = async (jobId) => {
     if (!studentId) return;
-    if (!window.confirm("Remove this application?")) return;
+    setConfirmModal({ isOpen: true, jobId });
+  };
+
+  const confirmWithdraw = async () => {
+    const jobId = confirmModal.jobId;
     try {
       await axios.delete(`${API_BASE}/jobs/apply/${jobId}`, {
         data: { studentId },
         headers,
       });
       setJobs((prev) => prev.filter((j) => j._id !== jobId));
+      setToast({ message: "Application withdrawn successfully!", type: "success" });
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to remove application");
+      setToast({ message: err.response?.data?.error || "Failed to remove application", type: "error" });
     }
   };
 
@@ -83,6 +92,16 @@ const Profile = () => {
 
   return (
     <div className="section-shell py-14 text-white space-y-10">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, jobId: null })}
+        onConfirm={confirmWithdraw}
+        title="Withdraw Application"
+        message="Are you sure you want to withdraw your application for this job?"
+        confirmText="Yes, Withdraw"
+        cancelText="Cancel"
+      />
       <div className="flex items-center justify-between">
         <div>
           <p className="pill mb-2">Student Profile</p>

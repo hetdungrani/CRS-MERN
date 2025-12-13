@@ -11,7 +11,6 @@ const studentSchema = new mongoose.Schema({
         unique: true,
     },
     password: {
-        // This is the HASHED password
         type: String, 
         required: true,
     },
@@ -19,7 +18,6 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    // Add other fields as needed (e.g., branch, year)
 });
 
 module.exports = mongoose.model('Student', studentSchema);

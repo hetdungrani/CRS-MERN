@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { LogIn, Lock, Mail } from "lucide-react";
 import axios from "axios";
+import Toast from "../components/Toast";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -19,17 +21,19 @@ const Login = () => {
       if (response.data.success && response.data.token) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("studentId", response.data.studentId);
-        navigate("/");
+        setToast({ message: "Login successful! Redirecting...", type: "success" });
+        setTimeout(() => navigate("/"), 1000);
       } else {
-        alert("Login failed due to incomplete server response.");
+        setToast({ message: "Login failed due to incomplete server response.", type: "error" });
       }
     } catch (err) {
-      alert(err.response?.data?.message || "Invalid Credentials. Please check your details.");
+      setToast({ message: err.response?.data?.message || "Invalid Credentials. Please check your details.", type: "error" });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 text-white">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <div className="elevated-card p-10 rounded-3xl w-full max-w-md">
         <div className="flex flex-col items-center mb-8 text-center space-y-2">
           <div className="soft-gradient p-4 rounded-2xl shadow-lg">

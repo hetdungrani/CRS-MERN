@@ -2,24 +2,20 @@ const Job = require('../models/Job');
 const Student = require('../models/Student');
 const socket = require('../socket');
 
-// --- C: Create Operation (Post Job) ---
 exports.postJob = async (req, res) => {
     try {
         const newJob = new Job(req.body);
         await newJob.save();
-        // populate and emit to connected clients
         const populated = await Job.findById(newJob._id).populate('applicants', 'fullName email cgpa');
-        try { socket.getIO().emit('jobPosted', populated); } catch (e) { /* ignore if socket not ready */ }
+        try { socket.getIO().emit('jobPosted', populated); } catch (e) {}
         res.status(201).json({ message: "Job posted successfully" });
     } catch (err) {
         res.status(500).json({ error: "Server error posting job" });
     }
 };
 
-// --- R: Read Operation (View Jobs for Student Portal) ---
 exports.getJobs = async (req, res) => {
     try {
-        // Populate applicants with selected student fields so admin UI can display them
         const jobs = await Job.find()
             .sort({ postedDate: -1 })
             .populate('applicants', 'fullName email cgpa');
@@ -29,7 +25,6 @@ exports.getJobs = async (req, res) => {
     }
 };
 
-// --- U: Update Operation (Edit Job) ---
 exports.updateJob = async (req, res) => {
     try {
         const { id } = req.params;
@@ -39,7 +34,7 @@ exports.updateJob = async (req, res) => {
 
         if (!updated) return res.status(404).json({ error: 'Job not found' });
 
-        try { socket.getIO().emit('jobUpdated', updated); } catch (e) { /* ignore if socket not ready */ }
+        try { socket.getIO().emit('jobUpdated', updated); } catch (e) {}
         return res.json({ message: 'Job updated successfully', job: updated });
     } catch (err) {
         console.error('Error updating job:', err);
@@ -47,13 +42,12 @@ exports.updateJob = async (req, res) => {
     }
 };
 
-// --- D: Delete Operation (Remove Job) ---
 exports.deleteJob = async (req, res) => {
     try {
         const { id } = req.params;
         const deleted = await Job.findByIdAndDelete(id);
         if (!deleted) return res.status(404).json({ error: 'Job not found' });
-        try { socket.getIO().emit('jobDeleted', { _id: id }); } catch (e) { /* ignore if socket not ready */ }
+        try { socket.getIO().emit('jobDeleted', { _id: id }); } catch (e) {}
         return res.json({ message: 'Job deleted successfully' });
     } catch (err) {
         console.error('Error deleting job:', err);
@@ -61,7 +55,6 @@ exports.deleteJob = async (req, res) => {
     }
 };
 
-// POST /api/jobs/apply/:id
 exports.applyJob = async (req, res) => {
     try {
         const jobId = req.params.id;
@@ -77,12 +70,10 @@ exports.applyJob = async (req, res) => {
         const student = await Student.findById(studentId);
         if (!student) return res.status(404).json({ error: 'Student not found' });
 
-        // Check if already applied
         if (job.applicants && job.applicants.includes(student._id)) {
             return res.status(400).json({ error: 'Student already applied for this job' });
         }
 
-        // Check CGPA criteria
         if (student.cgpa < job.criteria) {
             return res.status(400).json({ error: 'CGPA below required criteria' });
         }
@@ -91,9 +82,8 @@ exports.applyJob = async (req, res) => {
         job.applicants.push(student._id);
         await job.save();
 
-        // populate job for emitting
         const populatedJob = await Job.findById(jobId).populate('applicants', 'fullName email cgpa');
-        try { socket.getIO().emit('jobUpdated', populatedJob); } catch (e) { /* ignore if socket not ready */ }
+        try { socket.getIO().emit('jobUpdated', populatedJob); } catch (e) {}
 
         return res.json({ message: 'Application submitted successfully' });
     } catch (err) {
@@ -102,7 +92,6 @@ exports.applyJob = async (req, res) => {
     }
 };
 
-// DELETE /api/jobs/apply/:id - withdraw application
 exports.withdrawJob = async (req, res) => {
     try {
         const jobId = req.params.id;
@@ -119,7 +108,7 @@ exports.withdrawJob = async (req, res) => {
         await job.save();
 
         const populatedJob = await Job.findById(jobId).populate('applicants', 'fullName email cgpa');
-        try { socket.getIO().emit('jobUpdated', populatedJob); } catch (e) { /* ignore */ }
+        try { socket.getIO().emit('jobUpdated', populatedJob); } catch (e) {}
 
         return res.json({ message: 'Application withdrawn successfully' });
     } catch (err) {

@@ -14,6 +14,8 @@ import {
   X,
 } from "lucide-react";
 import { io } from "socket.io-client";
+import Toast from "../components/Toast";
+import ConfirmModal from "../components/ConfirmModal";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -23,6 +25,8 @@ const JobPostList = () => {
   const [expandedJobId, setExpandedJobId] = useState(null);
   const [editingJob, setEditingJob] = useState(null);
   const [form, setForm] = useState({ title: "", company: "", salary: "", criteria: "" });
+  const [toast, setToast] = useState(null);
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, jobId: null });
   const token = useMemo(() => localStorage.getItem("adminToken"), []);
 
   const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
@@ -93,19 +97,25 @@ const JobPostList = () => {
       const res = await axios.put(`${API_BASE}/jobs/${editingJob._id}`, form, { headers: authHeader });
       const updated = res.data.job;
       setJobs((prev) => prev.map((j) => (j._id === updated._id ? updated : j)));
+      setToast({ message: "Job updated successfully!", type: "success" });
       closeEdit();
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to update job");
+      setToast({ message: err.response?.data?.error || "Failed to update job", type: "error" });
     }
   };
 
   const handleDelete = async (jobId) => {
-    if (!window.confirm("Delete this job?")) return;
+    setConfirmModal({ isOpen: true, jobId });
+  };
+
+  const confirmDelete = async () => {
+    const jobId = confirmModal.jobId;
     try {
       await axios.delete(`${API_BASE}/jobs/${jobId}`, { headers: authHeader });
       setJobs((prev) => prev.filter((j) => j._id !== jobId));
+      setToast({ message: "Job deleted successfully!", type: "success" });
     } catch (err) {
-      alert(err.response?.data?.error || "Failed to delete job");
+      setToast({ message: err.response?.data?.error || "Failed to delete job", type: "error" });
     }
   };
 
@@ -119,6 +129,16 @@ const JobPostList = () => {
 
   return (
     <div className="admin-shell py-10">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
+      <ConfirmModal
+        isOpen={confirmModal.isOpen}
+        onClose={() => setConfirmModal({ isOpen: false, jobId: null })}
+        onConfirm={confirmDelete}
+        title="Delete Job"
+        message="Are you sure you want to delete this job posting? This action cannot be undone."
+        confirmText="Yes, Delete"
+        cancelText="Cancel"
+      />
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="admin-pill mb-2">Posted Opportunities</p>

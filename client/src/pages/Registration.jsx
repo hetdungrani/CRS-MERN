@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { UserPlus, Mail, Lock, GraduationCap, User } from "lucide-react";
+import Toast from "../components/Toast";
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Registration = () => {
     password: "",
     cgpa: "",
   });
+  const [toast, setToast] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,15 +22,17 @@ const Registration = () => {
       const res = await axios.post("http://localhost:5000/api/register", formData);
       if (res.status === 201 || res.data.message) {
         setFormData({ fullName: "", email: "", password: "", cgpa: "" });
-        navigate("/login");
+        setToast({ message: "Registration successful! Redirecting to login...", type: "success" });
+        setTimeout(() => navigate("/login"), 1500);
       }
     } catch (err) {
-      alert("Error: " + (err.response?.data?.error || "Registration Failed. Check server status."));
+      setToast({ message: err.response?.data?.error || "Registration Failed. Check server status.", type: "error" });
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 text-white">
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       <form
         onSubmit={handleSubmit}
         className="elevated-card p-10 rounded-3xl w-full max-w-lg space-y-6"
