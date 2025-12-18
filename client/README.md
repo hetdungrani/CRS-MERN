@@ -1,16 +1,75 @@
-# React + Vite
+# CRS – Client Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Overview
 
-Currently, two official plugins are available:
+The **Client Application** is the user-facing part of the CRS MERN project.
+It allows end users to interact with the system, view data, and perform actions based on their role and permissions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠 Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **Frontend:** React.js
+* **State Management:** React Hooks / Context API
+* **Styling:** CSS / Bootstrap / Tailwind (if used)
+* **API Communication:** Axios / Fetch
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Features
+
+* User registration & login
+* View and manage personal data
+* Submit forms / requests
+* Fetch real-time data from server
+* Responsive UI
+
+---
+
+## 🚀 How to Run Client App Locally
+
+```bash
+cd client
+npm install
+npm start
+```
+
+The app will run on:
+
+```
+http://localhost:5174/
+```
+
+---
+
+## 🔗 Backend Dependency
+
+The client app depends on the **server application** for:
+
+* Authentication
+* Data storage
+* Business logic
+
+Ensure the backend server is running before using the client app.
+
+---
+
+## 📂 Folder Structure (Example)
+
+```
+client/
+ ├── src/
+ ├── components/
+ ├── pages/
+ ├── public/
+ ├── package.json
+ └── README.md
+```
+
+---
+
+## ⚠️ Notes
+
+* API base URL should be correctly configured
+* Backend must be live and accessible
+* Proper error handling is recommended
